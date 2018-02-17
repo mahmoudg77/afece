@@ -1,0 +1,46 @@
+DirectoryIndex index.php
+
+ErrorDocument 404 /index.php?lang=en&controller=Error&method=index&number=404
+ErrorDocument 500 /index.php?lang=en&controller=Error&method=index&number=500
+
+
+RewriteEngine on
+RewriteBase /
+
+
+# remove index.php from URL
+RewriteCond %{THE_REQUEST} /index\.php [NC]
+RewriteRule ^(.*?)index\.php$ /$1 [L,R=301,NC,NE]
+
+ # if lang is Arabic use it
+RewriteCond %{THE_REQUEST} !\s/(ar|en)/ [NC]
+RewriteCond %{HTTP:Accept-Language} ^ar [NC]
+RewriteRule ^ /ar%{REQUEST_URI} [L,NC,R=301]
+
+# otherwise use English
+RewriteCond %{THE_REQUEST} !\s/(ar|en)/ [NC]
+RewriteRule ^ /en%{REQUEST_URI} [L,NC,R=301]
+
+# populate ?lang query parameter
+RewriteRule ^(en|ar)(/?)$ index.php?lang=$1 [L,QSA,NC]
+
+
+RewriteRule ^(en|ar)/(templates|icons|assets|uploads)/(.*)$ $2/$3?lang=$1 [L,QSA,NC]
+
+
+#RewriteRule ^views/(.*)$ views/$1 [L,QSA,NC]
+
+RewriteRule ^(en|ar)/api/(index.php)$  index.php?lang=$1&controller=home&method=index&id=0&api  [L,QSA]
+RewriteRule ^(en|ar)/api/(index.php)$  index.php?lang=$1&controller=home&method=index&id=0&api  [L,QSA]
+RewriteRule ^(en|ar)/api/(.*)/(.*)/(.*)$  index.php?lang=$1&controller=$2&method=$3&id=$4&api [L,QSA]
+RewriteRule ^(en|ar)/api/(.*)/(.*)$ index.php?lang=$1&controller=$2&method=$3&api  [L,QSA]
+RewriteRule ^(en|ar)/api/(.*)$  index.php?lang=$1&controller=$2&method=index&api  [L,QSA]
+
+RewriteRule ^(en|ar)/(index.php)$  index.php?lang=$1&controller=home&method=index&id=0  [L,QSA]
+RewriteRule ^(en|ar)/(.*)/(.*)/(.*)$  index.php?lang=$1&controller=$2&method=$3&id=$4 [L,QSA]
+RewriteRule ^(en|ar)/(.*)/(.*)$ index.php?lang=$1&controller=$2&method=$3  [L,QSA]
+RewriteRule ^(en|ar)/(.*)$  index.php?lang=$1&controller=$2&method=index  [L,QSA]
+
+
+# populate ?lang query parameter
+RewriteRule ^(en|ar)(.*)$ $2?lang=$1 [L,QSA,NC]
